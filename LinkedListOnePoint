@@ -1,0 +1,328 @@
+@@ -0,0 +1,327 @@
+package LinkedListSummary;
+
+import java.util.List;
+import java.util.Scanner;
+import java.util.Stack;
+
+public class LinkedListOnePoint {
+    //头结点
+    private Node head = null;
+    //链表长度
+    private int length = 0;
+
+    /*初始定义节点的结构，一个节点包含了
+     *data 数据存储域
+     *next 下一个节点位置信息
+     */
+
+    private class Node {
+        private int data;
+        private Node next;
+
+        public Node(int data) {
+            this.data = data;
+        }
+
+        public Node(int data, Node next) {
+            this.data = data;
+            this.next = next;
+        }
+
+        public void setData(int data) {
+            this.data = data;
+        }
+
+        public void setNext(Node next) {
+            this.next = next;
+        }
+
+        public Node getNext() {
+            return next;
+        }
+
+        public int getData() {
+            return data;
+        }
+
+        @Override
+        public String toString() {
+            return "Node [data=" + data + "]";
+        }
+    }
+
+    /*
+     *判断链表的长度
+     */
+
+    public int getLength(Node headNode) {
+        int length = 0;
+        Node currentNode = headNode;
+        while (currentNode != null) {
+            length++;
+            currentNode = currentNode.getNext();
+        }
+        return length;
+    }
+
+	/*
+	判断链表是否为空
+	正则表达式判断 如果length=0 return true；
+	              如果length！=0 return false;
+	 */
+
+    public boolean IsEmpty() {
+        return length == 0 ? true : false;
+    }
+
+	/*
+	插入结点：
+	1.表头前插入一个新结点，链表开始处；
+    2.表尾后插入一个新结点，链表结束处；
+    3.中间插入一个新结点，随机位置。
+	 */
+
+    //表头插入
+
+    public void InsertInList(int data) {
+        Node newNode = new Node(data);
+        if (length == 0) {
+            head = newNode;
+        } else {
+            newNode.next = head;
+            head = newNode;
+        }
+        length++;
+    }
+
+//	public Node InsertInList(Node headNode,Node nodeToInsert,int position){
+//		//若链表为空，直接插入
+//		if(headNode==null){
+//			return nodeToInsert;
+//		}
+//		int length= getLength(headNode);
+//		//越界判断
+//		if(position>length-1||position<1){
+//			System.out.println("越界"+(length+1));
+//			return headNode;
+//		}
+//		//在开头插入
+//		if(position==1){
+//			nodeToInsert.setNext(headNode);
+//			return nodeToInsert;
+//		}
+//		//在链表中间或结尾插入
+//		else{
+//			Node previousNode=headNode;
+//			int count=1;
+//			while (count<position-1){
+//				previousNode=previousNode.getNext();
+//				count++;
+//			}
+//			Node currenNode=previousNode.getNext();
+//			nodeToInsert.setNext(currenNode);
+//			previousNode.setNext(nodeToInsert);
+//		}
+//		return headNode;
+//	}
+
+    /*
+     *删除结点，也是结点出栈
+     * 同样分为三种情况：
+     * 表头
+     * 表尾
+     * 随机位置（中间）
+     *
+     * 进阶：删除指定位置结点
+     */
+
+    public Object DeleteHeadNode() {
+        if (length == 0) {
+            return null;
+        }
+        Object obj = head.data;
+        if (head.next == null) {
+            head = null;
+        } else {
+            head = head.next;
+        }
+        length--;
+        return obj;
+    }
+
+    /*
+     *删除指定结点
+     */
+
+    public boolean DeteleNode(int obj) {
+        if (length == 0) {
+            System.out.println("链表为空");
+            return false;
+        }
+        Node prviousNode = null;
+        Node currentNode = head;
+        while (currentNode.data != obj) {
+            if (currentNode.next == null) {
+                System.out.println("未找到该结点");
+                return false;
+            }
+            prviousNode = currentNode;
+            currentNode = currentNode.next;
+        }
+        if (currentNode == head) {
+            this.DeleteHeadNode();
+        } else {
+            prviousNode.next = currentNode.next;
+            length--;
+        }
+        return true;
+    }
+
+
+    Node DeleteNode(Node headNode, int position) {
+
+        int length = getLength(headNode);
+        if (position > length || position < 1) {
+            System.out.println("越界" + length);
+            return headNode;
+        }
+
+        //删除表头结点
+
+        if (position == 1) {
+            Node currentNdoe = headNode.getNext();
+            headNode = null;
+            return currentNdoe;
+        }
+
+        //删除中间结点或表尾结点
+
+        else {
+            Node previousNode = headNode;
+            int count = 1;
+            while (count < position) {
+                previousNode = previousNode.getNext();
+                count++;
+            }
+            Node currenNode = previousNode.getNext();
+            previousNode.setNext(currenNode.getNext());
+            currenNode = null;
+        }
+        return headNode;
+    }
+
+
+    /*
+     *查找，判断链表中是否包含某个元素
+     */
+
+    public boolean Contain(int data) {
+        if (length == 0) {
+            return false;
+        }
+        Node n = head;
+        while (n != null) {
+            if (n.data == data) {
+                return true;
+            } else {
+                n = n.next;
+            }
+        }
+        return false;
+    }
+
+
+    /*
+     *打印链表
+     * 正向使用栈positive
+     * 反向使用递归
+     */
+
+
+    public void display() {
+        if (length == 0) {
+            System.out.println("链表为空！");
+        }
+        Node n = head;
+        while (n != null) {
+            System.out.print("<" + n.data);
+            n = n.next;
+        }
+        System.out.println();
+    }
+
+
+    public void PrintListoSitiveElement(Node node) {
+        if (node == null) {
+            System.out.println("链表为空");
+        }
+        Stack<Integer> sta = new Stack<Integer>();
+        while (node != null) {
+            //将链表存入栈中
+            sta.push((Integer) node.data);
+            node = node.next;
+        }
+        while (!sta.empty()) {
+            //出栈
+            System.out.print(sta.pop() + "<");
+        }
+        System.out.println();
+    }
+
+    //反向打印
+
+    public void PrintListReverseElement(Node node) {
+        if (node == null) {
+            System.out.println("链表为空");
+        } else {
+            if (node.next != null) {
+                PrintListReverseElement(node.next);
+            }
+            System.out.print(node.data + "<");
+        }
+    }
+
+
+    /*
+     *测试
+     */
+
+    public static void main(String[] args) {
+        LinkedListOnePoint list = new LinkedListOnePoint();
+
+        //输出链表长度
+        System.out.println(list.length);
+        //输出链表是否为空
+        System.out.println(list.IsEmpty());
+        list.display();
+
+        list.InsertInList(0);
+        list.InsertInList(2);
+        list.InsertInList(5);
+        list.InsertInList(6);
+        list.InsertInList(7);
+        list.InsertInList(9);
+        list.InsertInList(23);
+
+        list.PrintListReverseElement(list.head);
+        System.out.println();
+        list.PrintListoSitiveElement(list.head);
+
+        //输出链表长度
+        System.out.println("输出链表长度\t" + list.length);
+        //输出链表是否为空
+        System.out.println("输出链表是否为空\t" + list.IsEmpty());
+        System.out.println("输出所有元素：");
+        list.display();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("删除：");
+        int position = scanner.nextInt();
+        System.out.println("删除值为" + position + "的结点");
+        list.DeteleNode(position);
+        list.display();
+//		list.DeleteNode(,4);
+//		list.display();
+    }
+
+
+}
